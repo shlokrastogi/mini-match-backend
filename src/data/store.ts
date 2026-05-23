@@ -33,11 +33,18 @@ export const jobs = [
     id: "101",
     title: "Frontend Dev",
     requiredSkills: ["React"],
-    minYearsExperience: 1,
+    minYearsExperience: 4,
     location: "Delhi",
   },
   {
     id: "102",
+    title: "Backend Dev",
+    requiredSkills: ["MongoDB", "Node"],
+    minYearsExperience: 0,
+    location: "Remote",
+  },
+  {
+    id: "103",
     title: "Backend Dev",
     requiredSkills: [], // No skills are required
     minYearsExperience: 0,

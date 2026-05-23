@@ -36,7 +36,9 @@ export function calculateScore(candidate: Candidate, job: Job) {
     locationScore = 0;
   }
 
-  const total = 0.6 * skillScore + 0.3 * expScore + 0.1 * locationScore;
+  const totalRaw = 0.6 * skillScore + 0.3 * expScore + 0.1 * locationScore;
+
+  const total = Number(totalRaw.toFixed(2));
 
   return {
     totalScore: total,
