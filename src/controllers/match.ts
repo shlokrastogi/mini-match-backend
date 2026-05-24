@@ -1,13 +1,22 @@
+import { z } from "zod";
 import { Request, Response } from "express";
 import { candidates, jobs } from "../data/store";
 import { calculateScore } from "../services/scoring";
-import { MatchRequestBody } from "../types/type";
+import { MatchSchema, MatchRequestBody } from "../schemas/MatchSchema";
 
 export const matchCandidates = (
   req: Request<{}, {}, MatchRequestBody>,
   res: Response,
 ) => {
-  const { jobId, minScore } = req.body;
+  const parsed = MatchSchema.safeParse(req.body);
+
+  if (!parsed.success) {
+    return res.status(400).json({
+      error: z.treeifyError(parsed.error),
+    });
+  }
+
+  const { jobId, minScore } = parsed.data;
 
   const job = jobs.find((j) => j.id === jobId);
 
@@ -26,5 +35,5 @@ export const matchCandidates = (
 
   results.sort((a, b) => b.totalScore - a.totalScore);
 
-  res.json(results);
+  return res.json(results);
 };
