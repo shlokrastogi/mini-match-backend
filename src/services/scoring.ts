@@ -1,5 +1,7 @@
 import { Candidate, Job } from "../types/type";
 
+const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+
 export function calculateScore(candidate: Candidate, job: Job) {
   let skillScore = 1;
 
@@ -38,14 +40,12 @@ export function calculateScore(candidate: Candidate, job: Job) {
 
   const totalRaw = 0.6 * skillScore + 0.3 * expScore + 0.1 * locationScore;
 
-  const total = Number(totalRaw.toFixed(2));
-
   return {
-    totalScore: total,
+    totalScore: round2(totalRaw),
     breakdown: {
-      skill: skillScore,
-      experience: expScore,
-      location: locationScore,
+      skill: round2(skillScore),
+      experience: round2(expScore),
+      location: round2(locationScore),
     },
   };
 }

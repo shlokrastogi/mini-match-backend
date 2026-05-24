@@ -2,12 +2,9 @@ import { z } from "zod";
 import { Request, Response } from "express";
 import { candidates, jobs } from "../data/store";
 import { calculateScore } from "../services/scoring";
-import { MatchSchema, MatchRequestBody } from "../schemas/MatchSchema";
+import { MatchSchema } from "../schemas/MatchSchema";
 
-export const matchCandidates = (
-  req: Request<{}, {}, MatchRequestBody>,
-  res: Response,
-) => {
+export const matchCandidates = (req: Request, res: Response) => {
   const parsed = MatchSchema.safeParse(req.body);
 
   if (!parsed.success) {
@@ -24,16 +21,13 @@ export const matchCandidates = (
     return res.status(404).json({ error: "Job not found" });
   }
 
-  let results = candidates.map((candidate) => {
-    const score = calculateScore(candidate, job);
-    return { candidate, ...score };
-  });
-
-  if (minScore !== undefined) {
-    results = results.filter((r) => r.totalScore >= minScore);
-  }
-
-  results.sort((a, b) => b.totalScore - a.totalScore);
+  const results = candidates
+    .map((candidate) => {
+      const score = calculateScore(candidate, job);
+      return { candidate, ...score };
+    })
+    .filter((r) => (minScore !== undefined ? r.totalScore >= minScore : true))
+    .sort((a, b) => b.totalScore - a.totalScore);
 
   return res.json(results);
 };
